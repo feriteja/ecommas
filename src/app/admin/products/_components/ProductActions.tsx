@@ -39,7 +39,7 @@ export function DeleteDropdownItem({
   disable,
 }: {
   id: string;
-  disable: boolean;
+  disable?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
