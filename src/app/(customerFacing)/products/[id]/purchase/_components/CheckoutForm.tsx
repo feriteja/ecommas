@@ -86,7 +86,7 @@ function Form({
 
     setIsLoading(true);
 
-    const orderExist = await useOrderExists(email, productId);
+    const orderExist = await useOrderExists("userId", productId);
 
     if (orderExist) {
       setErrorMessage(

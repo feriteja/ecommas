@@ -10,9 +10,17 @@ export default function Layout({
   return (
     <>
       <Nav>
-        <NavLink href={"/"}>Home</NavLink>
-        <NavLink href={"/products"}>Products</NavLink>
-        <NavLink href={"/orders"}>My Orders</NavLink>
+        <ul className="flex items-center gap-6 text-sm mx-auto">
+          <li>
+            <NavLink href={"/"}>Home</NavLink>
+          </li>
+          <li>
+            <NavLink href={"/products"}>Products</NavLink>
+          </li>
+          <li>
+            <NavLink href={"/orders"}>My Orders</NavLink>
+          </li>
+        </ul>
       </Nav>
       <div className="container  my-6">{children}</div>
     </>

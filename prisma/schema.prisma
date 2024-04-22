@@ -22,14 +22,17 @@ model Product {
   updateAt               DateTime               @updatedAt
   orders                 Order[]
   downloadVerification   DownloadVerification[]
+  CartItem               CartItem[]
 }
 
 model User {
   id        String   @id @default(uuid())
-  email     String   @unique
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
   orders    Order[]
+  Auth      Auth?
+  Cart      Cart?
+  Profile   Profile?
 }
 
 model Order {
@@ -49,4 +52,44 @@ model DownloadVerification {
   createdAt DateTime @default(now())
   productId String
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id               String  @id @default(uuid())
+  name             String?
+  phoneNumber      String?
+  photoProfilePath String?
+  userId           String  @unique
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Auth {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  password  String
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+
+  // Optional: You can add additional fields like total price, status, etc.
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  productId String
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  cart      Cart     @relation(fields: [cartId], references: [id])
 }

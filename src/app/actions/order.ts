@@ -2,9 +2,12 @@
 
 import db from "@/db/db";
 
-export default async function useOrderExists(email: string, productId: string) {
+export default async function useOrderExists(
+  userId: string,
+  productId: string
+) {
   return !!(await db.order.findFirst({
-    where: { user: { email }, productId },
+    where: { user: { id: userId }, productId },
     select: { id: true },
   }));
 }

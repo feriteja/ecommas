@@ -9,11 +9,21 @@ export default function AdminLayout({
 }>) {
   return (
     <>
-      <Nav>
-        <NavLink href={"/admin"}>Dashboard</NavLink>
-        <NavLink href={"/admin/products"}>Products</NavLink>
-        <NavLink href={"/admin/users"}>Users</NavLink>
-        <NavLink href={"/admin/orders"}>Orders</NavLink>
+      <Nav isLogin>
+        <ul className="flex items-center gap-6 text-sm">
+          <li>
+            <NavLink href={"/admin"}>Dashboard</NavLink>
+          </li>
+          <li>
+            <NavLink href={"/admin/products"}>Products</NavLink>
+          </li>
+          <li>
+            <NavLink href={"/admin/users"}>Users</NavLink>
+          </li>
+          <li>
+            <NavLink href={"/admin/orders"}>Orders</NavLink>
+          </li>
+        </ul>
       </Nav>
       <div className="container  my-6">{children}</div>
     </>
