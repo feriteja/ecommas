@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
     if (response.status === 200) {
       const token = response.data.token;
       Cookies.set("auth_token", token);
-      router.replace("/");
+      return router.replace("/");
     }
   };
 

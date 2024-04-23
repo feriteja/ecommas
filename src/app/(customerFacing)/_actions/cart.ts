@@ -1,17 +1,24 @@
 import db from "@/db/db";
+import { authData } from "@/lib/jwtToken";
+import { useRouter } from "next/navigation";
 
 type cartProps = {
-  userId: string;
   productId: string;
   quantity: number;
 };
 
-async function addToCart({ userId, productId, quantity }: cartProps) {
+async function addToCart({ productId, quantity }: cartProps) {
+  const router = useRouter();
+  const auth = authData();
+
+  if (!auth) {
+    return router.push("/login");
+  }
   try {
     // Check if the user already has a cart
     let cart = await db.cart.findUnique({
       where: {
-        userId: userId,
+        userId: auth.userId,
       },
     });
 
@@ -19,7 +26,7 @@ async function addToCart({ userId, productId, quantity }: cartProps) {
     if (!cart) {
       cart = await db.cart.create({
         data: {
-          userId: userId,
+          userId: auth.userId,
         },
       });
     }

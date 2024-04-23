@@ -12,6 +12,8 @@ import { formatCurrency } from "@/lib/formater";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { ShoppingCart } from "lucide-react";
+import { addToCart } from "@/app/(customerFacing)/_actions/cart";
 
 type ProductCardProps = {
   id: string;
@@ -40,9 +42,17 @@ function ProductCard({
       <CardContent className="flex-grow">
         <p className="line-clamp-4">{description}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="gap-2">
         <Button asChild size={"lg"} className="w-full">
           <Link href={`/products/${id}/purchase`}>Purchase</Link>
+        </Button>
+        <Button
+          asChild
+          size={"sm"}
+          className=" h-full"
+          onClick={() => addToCart({ productId: id, quantity: 1 })}
+        >
+          <ShoppingCart />
         </Button>
       </CardFooter>
     </Card>
