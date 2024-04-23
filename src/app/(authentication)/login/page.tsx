@@ -1,15 +1,20 @@
 // pages/login.tsx
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { authJwtData } from "@/lib/authJwtData";
+import { loginSuccess } from "@/store/authReducer";
 import axios from "axios";
 import Cookies from "js-cookie"; // Import Cookies library
+import jwt from "jsonwebtoken";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,11 +26,16 @@ const LoginPage: React.FC = () => {
 
     if (response.status === 200) {
       const token = response.data.token;
-      Cookies.set("auth_token", token);
+      console.log({ response });
+
+      Cookies.set("auth_token", token, { expires: 60 * 60 * 1000 * 24 });
+
+      const authData = authJwtData();
+
+      dispatch(loginSuccess(authData));
       return router.replace("/");
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

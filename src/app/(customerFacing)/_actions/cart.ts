@@ -1,5 +1,5 @@
 import db from "@/db/db";
-import { authData } from "@/lib/jwtToken";
+import { authData } from "@/lib/authJwtData";
 import { useRouter } from "next/navigation";
 
 type cartProps = {

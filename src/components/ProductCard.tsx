@@ -50,7 +50,7 @@ function ProductCard({
           asChild
           size={"sm"}
           className=" h-full"
-          onClick={() => addToCart({ productId: id, quantity: 1 })}
+          // onClick={() => addToCart({ productId: id, quantity: 1 })}
         >
           <ShoppingCart />
         </Button>
