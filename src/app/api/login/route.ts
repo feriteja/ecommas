@@ -1,7 +1,6 @@
 import db from "@/db/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
 type loginProps = {
@@ -40,9 +39,7 @@ export async function POST(req: Request) {
       { expiresIn: "1h" } // Token expiration time
     );
 
-    const response = NextResponse.next();
-    response.cookies.set("auth_token", token);
-    return response;
+    return new NextResponse(JSON.stringify({ token }), { status: 200 });
   } catch (error) {
     console.error("Error logging in:", error);
     return new NextResponse(

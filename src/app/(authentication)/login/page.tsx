@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Cookies from "js-cookie"; // Import Cookies library
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -12,16 +13,17 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ test: "test", email, password });
 
-    const user = await axios.post("http://localhost:3000/api/login", {
+    const response = await axios.post("http://localhost:3000/api/login", {
       email,
       password,
     });
 
-    console.log({ user });
-
-    // router.push("/dashboard");
+    if (response.status === 200) {
+      const token = response.data.token;
+      Cookies.set("auth_token", token);
+      router.replace("/");
+    }
   };
 
   return (
@@ -95,7 +97,7 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div>
+          <div className="text-center gap-y-4">
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -123,6 +125,11 @@ const LoginPage: React.FC = () => {
               </span>
               Sign in
             </button>
+            <div className="mt-4">
+              <a href="/register" className="text-blue-500">
+                don't have account ?
+              </a>
+            </div>
           </div>
         </form>
       </div>

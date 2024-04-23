@@ -3,14 +3,10 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { ComponentProps, ReactNode } from "react";
+import Cookies from "js-cookie"; // Import Cookies library
 
-export function Nav({
-  children,
-  isLogin,
-}: {
-  children: ReactNode;
-  isLogin?: boolean;
-}) {
+export function Nav({ children }: { children: ReactNode }) {
+  const loginStatus = Cookies.get("auth_token");
   return (
     <header className="bg-white">
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -26,10 +22,12 @@ export function Nav({
             <nav aria-label="Global">{children}</nav>
           </div>
 
-          <div className="flex items-center gap-4">
-            {isLogin ? (
-              <></>
-            ) : (
+          <div
+            className={cn("items-center gap-4", [
+              loginStatus ? "hidden" : "flex",
+            ])}
+          >
+            {!loginStatus && (
               <>
                 <div className="sm:flex sm:gap-4">
                   <a

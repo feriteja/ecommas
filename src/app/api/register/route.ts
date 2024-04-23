@@ -6,19 +6,21 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 type registerhProps = {
+  name: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-  const { email, confirmPassword, password }: registerhProps = req.body;
+export async function POST(req: Request) {
+  const { name, email, confirmPassword, password }: registerhProps =
+    await req.json();
   // Check if passwords match
   if (password !== confirmPassword) {
-    return res.status(400).json({ error: "Password doesn't match" });
+    return new NextResponse(
+      JSON.stringify({ error: "Password doesn't match" }),
+      { status: 400 }
+    );
   }
 
   try {
@@ -30,7 +32,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (existingUser) {
-      return res.status(400).json({ error: "Email is already registered" });
+      return new NextResponse(
+        JSON.stringify({ error: "Email is already registered" }),
+        { status: 400 }
+      );
     }
 
     // Hash the password
@@ -40,6 +45,11 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const user = await db.user.create({
       data: {
         createdAt: new Date(),
+        Profile: {
+          create: {
+            name: name,
+          },
+        },
         Auth: {
           create: {
             createdAt: new Date(),
@@ -61,9 +71,12 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     );
 
     // Return JWT token
-    return res.status(200).json({ token });
+    return new NextResponse(JSON.stringify({ token }), { status: 201 });
   } catch (error) {
     console.log({ error });
-    return res.status(500).json({ error: "Internal server error" });
+    return new NextResponse(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500 }
+    );
   }
 }
