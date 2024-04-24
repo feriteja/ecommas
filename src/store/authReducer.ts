@@ -3,16 +3,21 @@ import { authJwtData } from "@/lib/authJwtData";
 import { createSlice } from "@reduxjs/toolkit";
 import { error } from "console";
 
-type authDataProps = {
+type AuthDataProps = {
   userId: string;
   email: string;
-  iat: number;
-  exp: number;
 };
 
-const initialState = {
+type InitialStateProps = {
+  isAuthenticated: boolean;
+  user: AuthDataProps | null;
+  isLoading: boolean;
+  error?: string | null;
+};
+
+const initialState: InitialStateProps = {
   isAuthenticated: false,
-  user: {},
+  user: null,
   isLoading: false,
   error: null,
 };
@@ -39,13 +44,13 @@ const authSlice = createSlice({
     },
     loginFailure: (state, action) => {
       state.isAuthenticated = false;
-      state.user = {};
+      state.user = null;
       state.isLoading = false;
       state.error = action.payload;
     },
     logout: (state) => {
       state.isAuthenticated = false;
-      state.user = {};
+      state.user = null;
       state.isLoading = false;
       state.error = null;
     },

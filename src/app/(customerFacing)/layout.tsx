@@ -1,5 +1,5 @@
 import { Nav } from "@/components/Nav";
-import { NavLink } from "@/components/NavAuth";
+import { CartNav, NavLink } from "@/components/NavAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +20,11 @@ export default function Layout({
           </li>
           <li>
             <NavLink href={"/orders"}>My Orders</NavLink>
+          </li>
+          <li>
+            <NavLink href={"/orders"}>
+              <CartNav />
+            </NavLink>
           </li>
         </ul>
       </Nav>

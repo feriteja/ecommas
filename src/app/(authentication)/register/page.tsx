@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 import Cookies from "js-cookie"; // Import Cookies library
+import { useAppDispatch } from "@/store/hooks";
+import { authJwtData } from "@/lib/authJwtData";
+import { loginSuccess } from "@/store/authReducer";
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -12,6 +15,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +33,8 @@ const RegisterPage: React.FC = () => {
     if (response.status === 201) {
       const token = response.data.token;
       Cookies.set("auth_token", token);
+      const authData = authJwtData();
+      dispatch(loginSuccess(authData));
       router.replace("/");
     }
   };

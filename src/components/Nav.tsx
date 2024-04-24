@@ -1,17 +1,10 @@
-import { authJwtData } from "@/lib/authJwtData";
-import { cn } from "@/lib/utils";
-import { RootState } from "@/store/store";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ComponentProps, ReactNode } from "react";
-import { useSelector } from "react-redux";
 import { cookies } from "next/headers";
+import { ReactNode } from "react";
 import NavAuth from "./NavAuth";
 
 export function Nav({ children }: { children: ReactNode }) {
   const cookieStore = cookies();
   const isLogin = cookieStore.get("auth_token");
-  // const isLogin = false;
 
   return (
     <header className="bg-white">

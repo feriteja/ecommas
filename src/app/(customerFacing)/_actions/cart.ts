@@ -1,24 +1,18 @@
+"use server";
 import db from "@/db/db";
-import { authData } from "@/lib/authJwtData";
-import { useRouter } from "next/navigation";
 
 type cartProps = {
+  userId?: string;
   productId: string;
   quantity: number;
 };
 
-async function addToCart({ productId, quantity }: cartProps) {
-  const router = useRouter();
-  const auth = authData();
-
-  if (!auth) {
-    return router.push("/login");
-  }
+async function addToCart({ userId, productId, quantity }: cartProps) {
   try {
     // Check if the user already has a cart
     let cart = await db.cart.findUnique({
       where: {
-        userId: auth.userId,
+        userId: userId,
       },
     });
 
@@ -26,7 +20,7 @@ async function addToCart({ productId, quantity }: cartProps) {
     if (!cart) {
       cart = await db.cart.create({
         data: {
-          userId: auth.userId,
+          userId: userId!,
         },
       });
     }
@@ -67,4 +61,43 @@ async function addToCart({ productId, quantity }: cartProps) {
   }
 }
 
-export { addToCart };
+async function getTotalItemsInCart(cartId: string) {
+  const cartItems = await db.cartItem.findMany({
+    where: {
+      cartId: cartId,
+    },
+    select: {
+      quantity: true,
+    },
+  });
+
+  // Calculate total quantity
+  let totalQuantity = 0;
+  cartItems.forEach((item) => {
+    totalQuantity += item.quantity;
+  });
+
+  return totalQuantity;
+}
+
+async function getTotalItemsInCartByUserId(userId: string) {
+  // Find the cartId associated with the userId
+  const cart = await db.cart.findUnique({
+    where: {
+      userId: userId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!cart) {
+    // Handle case where no cart is found for the userId
+    return 0;
+  }
+
+  // Once you have the cartId, use the previous function to get the total quantity of items
+  return getTotalItemsInCart(cart.id);
+}
+
+export { addToCart, getTotalItemsInCartByUserId };
