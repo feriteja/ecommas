@@ -26,11 +26,11 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
             {formatCurrency(product!.priceInCents / 100)}
           </p>
           <p className="mt-4">{product?.description}</p>
-          <div className="mt-6 grid grid-cols-6">
-            <ButtonCart productId={params.id} />
+          <div className="mt-6 grid grid-cols-6 gap-2">
             <button className="bg-green-500 text-white px-4 py-2 rounded-md col-span-5">
               Purchase
             </button>
+            <ButtonCart productId={params.id} />
           </div>
         </div>
       </div>

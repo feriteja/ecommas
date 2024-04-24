@@ -1,4 +1,5 @@
-import { Nav, NavLink } from "@/components/Nav";
+import { Nav } from "@/components/Nav";
+import { NavLink } from "@/components/NavAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ export default function AdminLayout({
 }>) {
   return (
     <>
-      <Nav isLogin>
+      <Nav>
         <ul className="flex items-center gap-6 text-sm">
           <li>
             <NavLink href={"/admin"}>Dashboard</NavLink>

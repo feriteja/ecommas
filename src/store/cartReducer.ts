@@ -25,10 +25,17 @@ const authSlice = createSlice({
     deleteItemFromCart: (state, action) => {
       state.cartItemCount -= action.payload;
     },
+    resetItemFromCart: (state) => {
+      state.cartItemCount = 0;
+    },
   },
 });
 
-export const { addItemToCart, deleteItemFromCart, setInitItemCart } =
-  authSlice.actions;
+export const {
+  addItemToCart,
+  deleteItemFromCart,
+  setInitItemCart,
+  resetItemFromCart,
+} = authSlice.actions;
 
 export default authSlice.reducer;

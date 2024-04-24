@@ -22,13 +22,11 @@ export default function Layout({
             <NavLink href={"/orders"}>My Orders</NavLink>
           </li>
           <li>
-            <NavLink href={"/orders"}>
-              <CartNav />
-            </NavLink>
+            <CartNav />
           </li>
         </ul>
       </Nav>
-      <div className="container  my-6">{children}</div>
+      <div className="container my-6 bg-slate-50 min-h-screen">{children}</div>
     </>
   );
 }

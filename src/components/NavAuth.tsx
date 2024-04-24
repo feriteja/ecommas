@@ -2,7 +2,7 @@
 import { getTotalItemsInCartByUserId } from "@/app/(customerFacing)/_actions/cart";
 import { cn } from "@/lib/utils";
 import { logout } from "@/store/authReducer";
-import { setInitItemCart } from "@/store/cartReducer";
+import { resetItemFromCart, setInitItemCart } from "@/store/cartReducer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Cookies from "js-cookie";
 import { ShoppingCart } from "lucide-react";
@@ -18,6 +18,7 @@ function NavAuth({ isLogin }: { isLogin?: boolean }) {
   const logoutHandler = () => {
     Cookies.remove("auth_token");
     dispatch(logout());
+    dispatch(resetItemFromCart());
     route.refresh();
   };
 
@@ -93,6 +94,7 @@ export function CartNav() {
   const cartNumber = useAppSelector((state) => state.cart.cartItemCount);
   const userId = useAppSelector((state) => state.auth.user?.userId);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     if (userId) {
@@ -110,12 +112,19 @@ export function CartNav() {
     }
   }, [userId]);
 
+  const toCartHandler = () => {
+    if (!userId) {
+      return router.push("/login");
+    }
+    return router.push("/cart");
+  };
+
   return (
-    <div className="relative">
+    <button onClick={() => toCartHandler()} className="relative">
       <span className="absolute -top-2 -right-2 bg-red-600 rounded-full text-destructive-foreground p-0.5 text-xs">
         {cartNumber}
       </span>
       <ShoppingCart />
-    </div>
+    </button>
   );
 }

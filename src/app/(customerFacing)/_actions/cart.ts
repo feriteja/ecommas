@@ -7,6 +7,27 @@ type cartProps = {
   quantity: number;
 };
 
+async function getItemCart(userId: string) {
+  try {
+    const cart = await db.cart.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function addToCart({ userId, productId, quantity }: cartProps) {
   try {
     // Check if the user already has a cart
@@ -100,4 +121,4 @@ async function getTotalItemsInCartByUserId(userId: string) {
   return getTotalItemsInCart(cart.id);
 }
 
-export { addToCart, getTotalItemsInCartByUserId };
+export { addToCart, getTotalItemsInCartByUserId, getItemCart };
