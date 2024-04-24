@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Card,
@@ -31,31 +32,40 @@ function ProductCard({
   description,
 }: ProductCardProps) {
   return (
-    <Card className="flex overflow-hidden flex-col">
-      <div className="relative w-full h-auto aspect-video">
-        <Image src={imagePath} fill alt={name} className="" />
-      </div>
-      <CardHeader>
-        <CardTitle>{name}</CardTitle>
-        <CardDescription>{formatCurrency(priceInCents / 100)}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="line-clamp-4">{description}</p>
-      </CardContent>
-      <CardFooter className="gap-2">
-        <Button asChild size={"lg"} className="w-full">
-          <Link href={`/products/${id}/purchase`}>Purchase</Link>
-        </Button>
-        <Button
-          asChild
-          size={"sm"}
-          className=" h-full"
-          onClick={() => addToCart({ productId: id, quantity: 1 })}
-        >
-          <ShoppingCart />
-        </Button>
-      </CardFooter>
-    </Card>
+    <Link href={`/products/${id}`} legacyBehavior>
+      <a>
+        <Card className="flex overflow-hidden flex-col">
+          <div className="relative w-full h-auto aspect-video">
+            <Image
+              src={imagePath}
+              fill
+              alt={name}
+              sizes="(max-width: 168px)"
+              className=""
+            />
+          </div>
+          <CardHeader>
+            <CardTitle>{name}</CardTitle>
+            <CardDescription>
+              {formatCurrency(priceInCents / 100)}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-grow">
+            <p className="line-clamp-4">{description}</p>
+          </CardContent>
+          <CardFooter className="gap-2">
+            <Button
+              asChild
+              size={"sm"}
+              className="w-full"
+              onClick={() => addToCart({ productId: id, quantity: 1 })}
+            >
+              <ShoppingCart />
+            </Button>
+          </CardFooter>
+        </Card>
+      </a>
+    </Link>
   );
 }
 

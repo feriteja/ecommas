@@ -11,6 +11,7 @@ function BannerSection() {
         <Image
           src={Banner1}
           height={300}
+          priority
           className="rounded-md w-full md:w-[700px] "
           alt={"Banner1"}
         />
@@ -19,6 +20,7 @@ function BannerSection() {
         <Image
           src={Banner1}
           height={125}
+          priority
           className="rounded-md hidden md:block"
           alt={"Banner1"}
         />
@@ -27,6 +29,7 @@ function BannerSection() {
         <Image
           src={Banner1}
           height={125}
+          priority
           className="rounded-md hidden md:block"
           alt={"Banner1"}
         />
