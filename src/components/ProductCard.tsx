@@ -15,6 +15,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { addToCart } from "@/app/(customerFacing)/_actions/cart";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useRouter } from "next/navigation";
+import { addItemToCart } from "@/store/cartReducer";
 
 type ProductCardProps = {
   id: string;
@@ -31,41 +34,51 @@ function ProductCard({
   priceInCents,
   description,
 }: ProductCardProps) {
+  const auth = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const addToCartHandle = async () => {
+    if (!auth.isAuthenticated) {
+      return router.push("/login");
+    }
+    await addToCart({ productId: id, quantity: 1, userId: auth.user?.userId });
+    dispatch(addItemToCart(1));
+  };
+
   return (
-    <Link href={`/products/${id}`} legacyBehavior>
-      <a>
-        <Card className="flex overflow-hidden flex-col">
-          <div className="relative w-full h-auto aspect-video">
-            <Image
-              src={imagePath}
-              fill
-              alt={name}
-              sizes="(max-width: 168px)"
-              className=""
-            />
-          </div>
-          <CardHeader>
-            <CardTitle>{name}</CardTitle>
-            <CardDescription>
-              {formatCurrency(priceInCents / 100)}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow">
-            <p className="line-clamp-4">{description}</p>
-          </CardContent>
-          <CardFooter className="gap-2">
-            <Button
-              asChild
-              size={"sm"}
-              className="w-full"
-              onClick={() => addToCart({ productId: id, quantity: 1 })}
-            >
-              <ShoppingCart />
-            </Button>
-          </CardFooter>
-        </Card>
-      </a>
-    </Link>
+    <Card className="flex overflow-hidden flex-col">
+      <Link href={`/products/${id}`}>
+        <div className="relative w-full h-auto aspect-video">
+          <Image
+            src={imagePath}
+            fill
+            alt={name}
+            sizes="(max-width: 168px)"
+            className=""
+          />
+        </div>
+        <CardHeader>
+          <CardTitle>{name}</CardTitle>
+          <CardDescription>
+            {formatCurrency(priceInCents / 100)}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow">
+          <p className="line-clamp-4">{description}</p>
+        </CardContent>
+      </Link>
+      <CardFooter className="gap-2">
+        <Button
+          asChild
+          size={"sm"}
+          className="w-full cursor-pointer"
+          onClick={() => addToCartHandle()}
+        >
+          <ShoppingCart />
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 
