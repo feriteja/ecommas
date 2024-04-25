@@ -11,24 +11,25 @@ type CartCardProps = CartItem & {
   product: Product;
 };
 
-export type SelectedProductProps = {
+export type SelectedItemCartProps = {
   id: string;
   quantity: number;
   price: number;
   name: string;
+  productId: string;
 };
 
 function CartPage() {
   const [cartItems, setCartItems] = useState<CartCardProps[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<
-    SelectedProductProps[]
+    SelectedItemCartProps[]
   >([]);
   const [refreshData, setRefreshData] = useState(false);
   const userId = useAppSelector((state) => state.auth.user?.userId);
   const dispatch = useAppDispatch();
 
   const handleProductSelect = (
-    cartItem: SelectedProductProps,
+    cartItem: SelectedItemCartProps,
     isSelected: boolean
   ) => {
     if (isSelected) {
@@ -41,7 +42,7 @@ function CartPage() {
   };
 
   const handleProductDelete = async (
-    selectedProducts: SelectedProductProps
+    selectedProducts: SelectedItemCartProps
   ) => {
     try {
       await deleteItemInCart(selectedProducts.id);
@@ -83,6 +84,7 @@ function CartPage() {
                 quantity: data.quantity,
                 price: data.product.priceInCents,
                 name: data.product.name,
+                productId: data.productId,
               })
             }
             onSelect={(isSelected) =>
@@ -92,6 +94,7 @@ function CartPage() {
                   quantity: data.quantity,
                   price: data.product.priceInCents,
                   name: data.product.name,
+                  productId: data.productId,
                 },
                 isSelected
               )

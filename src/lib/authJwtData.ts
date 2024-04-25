@@ -2,19 +2,19 @@
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode"; // JWT decoding library
 
-type JwtToken = {
+export type AuthJwtToken = {
   userId: string;
   email: string;
   iat: number;
   exp: number;
 };
 
-export const authJwtData = (): JwtToken | null => {
+export const authJwtData = (): AuthJwtToken | null => {
   // Get the JWT token from cookies
   const authToken = Cookies.get("auth_token");
   if (authToken) {
     try {
-      const decodedToken = jwtDecode(authToken) as JwtToken;
+      const decodedToken = jwtDecode(authToken) as AuthJwtToken;
 
       return decodedToken;
     } catch (error) {

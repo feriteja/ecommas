@@ -131,9 +131,20 @@ async function deleteItemInCart(cartItemId: string) {
   }
 }
 
+async function deleteItemsInCartBulk(cartItemId: string[]) {
+  try {
+    await db.cartItem.deleteMany({ where: { id: { in: cartItemId } } });
+    console.log("Item deleted many from cart successfully");
+  } catch (error) {
+    console.error("Error deleted item from cart:", error);
+    throw error;
+  }
+}
+
 export {
   addToCart,
   getTotalItemsInCartByUserId,
   getItemCart,
   deleteItemInCart,
+  deleteItemsInCartBulk,
 };
