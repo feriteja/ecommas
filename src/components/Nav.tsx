@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
 import NavAuth from "./NavAuth";
+import Link from "next/link";
 
 export function Nav({ children }: { children: ReactNode }) {
   const cookieStore = cookies();
@@ -11,11 +12,10 @@ export function Nav({ children }: { children: ReactNode }) {
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="md:flex md:items-center md:gap-12">
-            <a className="block text-teal-600" href="/">
+            <Link className="block text-teal-600" href="/">
               <span className="sr-only">Home</span>
-
               <span className="font-bold text-2xl">Ecommas</span>
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:block">

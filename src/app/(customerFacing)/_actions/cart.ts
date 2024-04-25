@@ -121,4 +121,19 @@ async function getTotalItemsInCartByUserId(userId: string) {
   return getTotalItemsInCart(cart.id);
 }
 
-export { addToCart, getTotalItemsInCartByUserId, getItemCart };
+async function deleteItemInCart(cartItemId: string) {
+  try {
+    await db.cartItem.delete({ where: { id: cartItemId } });
+    console.log("Item deleted from cart successfully");
+  } catch (error) {
+    console.error("Error deleted item from cart:", error);
+    throw error;
+  }
+}
+
+export {
+  addToCart,
+  getTotalItemsInCartByUserId,
+  getItemCart,
+  deleteItemInCart,
+};

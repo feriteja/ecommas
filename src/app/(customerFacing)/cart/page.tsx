@@ -1,9 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import CartCard from "./_components/CartCard";
-import { useAppSelector } from "@/store/hooks";
-import { getItemCart } from "../_actions/cart";
+import { deleteItemFromCart } from "@/store/cartReducer";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { CartItem, Product } from "@prisma/client";
+import { useEffect, useState } from "react";
+import { deleteItemInCart, getItemCart } from "../_actions/cart";
+import CartCard from "./_components/CartCard";
 import CartSummary from "./_components/CartSummary";
 
 type CartCardProps = CartItem & {
@@ -22,26 +23,46 @@ function CartPage() {
   const [selectedProducts, setSelectedProducts] = useState<
     SelectedProductProps[]
   >([]);
+  const [refreshData, setRefreshData] = useState(false);
   const userId = useAppSelector((state) => state.auth.user?.userId);
+  const dispatch = useAppDispatch();
+
+  const handleProductSelect = (
+    cartItem: SelectedProductProps,
+    isSelected: boolean
+  ) => {
+    if (isSelected) {
+      setSelectedProducts((prevSelected) => [...prevSelected, cartItem]);
+    } else {
+      setSelectedProducts((prevSelected) =>
+        prevSelected.filter((prevCartItem) => prevCartItem.id !== cartItem.id)
+      );
+    }
+  };
+
+  const handleProductDelete = async (
+    selectedProducts: SelectedProductProps
+  ) => {
+    try {
+      await deleteItemInCart(selectedProducts.id);
+
+      setSelectedProducts((prevSelected) =>
+        prevSelected.filter(
+          (prevCartItem) => prevCartItem.id !== selectedProducts.id
+        )
+      );
+      dispatch(deleteItemFromCart(selectedProducts.quantity));
+      setRefreshData((prev) => !prev);
+    } catch (error) {
+      throw error;
+    }
+  };
 
   useEffect(() => {
     if (userId) {
       getItemCart(userId).then((items) => setCartItems(items[0].items));
     }
-  }, []);
-
-  const handleProductSelect = (
-    product: SelectedProductProps,
-    isSelected: boolean
-  ) => {
-    if (isSelected) {
-      setSelectedProducts((prevSelected) => [...prevSelected, product]);
-    } else {
-      setSelectedProducts((prevSelected) =>
-        prevSelected.filter((prevproduct) => prevproduct.id !== product.id)
-      );
-    }
-  };
+  }, [refreshData]);
 
   return (
     <div className="grid grid-cols-12 gap-4">
@@ -56,6 +77,14 @@ function CartPage() {
           <CartCard
             {...data}
             key={data.id}
+            onDelete={() =>
+              handleProductDelete({
+                id: data.id,
+                quantity: data.quantity,
+                price: data.product.priceInCents,
+                name: data.product.name,
+              })
+            }
             onSelect={(isSelected) =>
               handleProductSelect(
                 {

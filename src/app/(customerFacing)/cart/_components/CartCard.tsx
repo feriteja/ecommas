@@ -1,11 +1,14 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/formater";
 import { CartItem, Product } from "@prisma/client";
+import { Trash, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 type CartCardProps = CartItem & {
   product: Product;
   onSelect: (isSelected: boolean) => void;
+  onDelete: () => void;
 };
 
 function CartCard(props: CartCardProps) {
@@ -44,7 +47,15 @@ function CartCard(props: CartCardProps) {
             <p className="text-gray-800 font-semibold">
               {formatCurrency(product.priceInCents / 100)}
             </p>
-            <span>{props.quantity}</span>
+            <div className="flex gap-3">
+              <span>{props.quantity}</span>
+              <button
+                onClick={() => props.onDelete()}
+                className="stroke-destructive"
+              >
+                <Trash2 className="stroke-destructive" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
