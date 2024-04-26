@@ -20,15 +20,12 @@ const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await axios.post<{ token: string }>(
-      "http://localhost:3000/api/register",
-      {
-        name,
-        email,
-        password,
-        confirmPassword,
-      }
-    );
+    const response = await axios.post<{ token: string }>("/api/register", {
+      name,
+      email,
+      password,
+      confirmPassword,
+    });
 
     if (response.status === 201) {
       const token = response.data.token;
