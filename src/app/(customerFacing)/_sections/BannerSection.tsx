@@ -1,7 +1,5 @@
 import React from "react";
 import Banner1 from "../../../../public/banner/banner1.png";
-import Banner2 from "../../../../public/banner/banner2.png";
-import Banner3 from "../../../../public/banner/banner3.png";
 import Image from "next/image";
 
 function BannerSection() {

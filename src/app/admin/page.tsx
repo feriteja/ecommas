@@ -9,6 +9,26 @@ import db from "@/db/db";
 import { formatCurrency, formatNumber } from "@/lib/formater";
 import React from "react";
 
+// type DashboardCardProps = {
+//   title: string;
+//   subtitle: string;
+//   body: string;
+// };
+
+// export function DashboardCard({ title, subtitle, body }: DashboardCardProps) {
+//   return (
+//     <Card>
+//       <CardHeader>
+//         <CardTitle>{title}</CardTitle>
+//         <CardDescription>{subtitle}</CardDescription>
+//       </CardHeader>
+//       <CardContent>
+//         <p>{body}</p>
+//       </CardContent>
+//     </Card>
+//   );
+// }
+
 async function AdminDashboard() {
   const [salesData, userData, productData] = await Promise.all([
     await getSalesData(),
@@ -17,7 +37,7 @@ async function AdminDashboard() {
   ]);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <DashboardCard
+      {/* <DashboardCard
         title="Sales"
         subtitle={`${formatNumber(salesData.numberOfSales)} Orders`}
         body={formatCurrency(salesData.amount)}
@@ -33,7 +53,7 @@ async function AdminDashboard() {
         title="Active Products"
         subtitle={`${formatNumber(productData.inActiveCount)} Inactive `}
         body={`${formatNumber(productData.activeCount)}`}
-      />
+      /> */}
     </div>
   );
 }
@@ -75,24 +95,4 @@ async function getProductData() {
     db.product.count({ where: { isAvailableForPurchase: false } }),
   ]);
   return { activeCount, inActiveCount };
-}
-
-type DashboardCardProps = {
-  title: string;
-  subtitle: string;
-  body: string;
-};
-
-export function DashboardCard({ title, subtitle, body }: DashboardCardProps) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{subtitle}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>{body}</p>
-      </CardContent>
-    </Card>
-  );
 }

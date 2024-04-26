@@ -21,7 +21,7 @@ function getUsers() {
   return db.user.findMany({
     select: {
       id: true,
-      email: true,
+      Auth: { select: { email: true } },
       orders: { select: { pricePaidInCents: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -55,7 +55,7 @@ async function UserTable() {
       <TableBody>
         {users.map((user) => (
           <TableRow key={user.id}>
-            <TableCell>{user.email}</TableCell>
+            <TableCell>{user.Auth?.email}</TableCell>
             <TableCell>{formatNumber(user.orders.length)}</TableCell>
             <TableCell>
               {formatCurrency(

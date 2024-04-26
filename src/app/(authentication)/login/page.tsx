@@ -135,7 +135,7 @@ const LoginPage: React.FC = () => {
             </button>
             <div className="mt-4">
               <a href="/register" className="text-blue-500">
-                don't have account ?
+                don&apos;t have account ?
               </a>
             </div>
           </div>

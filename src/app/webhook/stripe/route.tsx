@@ -32,14 +32,14 @@ export async function POST(req: NextRequest) {
       orders: { create: { productId, pricePaidInCents } },
     };
 
-    const {
-      orders: [order],
-    } = await db.user.upsert({
-      where: { email },
-      create: userFields,
-      update: userFields,
-      select: { orders: { orderBy: { createdAt: "desc" }, take: 1 } },
-    });
+    // const {
+    //   orders: [order],
+    // } = await db.user.upsert({
+    //   where: { email },
+    //   create: userFields,
+    //   update: userFields,
+    //   select: { orders: { orderBy: { createdAt: "desc" }, take: 1 } },
+    // });
 
     const downloadVerification = await db.downloadVerification.create({
       data: {
