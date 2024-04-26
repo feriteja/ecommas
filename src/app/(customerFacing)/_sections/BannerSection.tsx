@@ -1,5 +1,4 @@
 import React from "react";
-// import Banner1 from "../../../../public/banner/Banner1.png";
 import Image from "next/image";
 
 function BannerSection() {
