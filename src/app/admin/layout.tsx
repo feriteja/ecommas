@@ -1,5 +1,6 @@
 import { Nav } from "@/components/Nav";
 import { NavLink } from "@/components/NavAuth";
+import { app } from "@/firebase/config";
 
 export const dynamic = "force-dynamic";
 

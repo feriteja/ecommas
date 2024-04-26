@@ -17,7 +17,7 @@ function ProductForm({ product }: { product?: Product | null }) {
     {}
   );
   const [priceInCent, setPriceInCent] = useState<number | undefined>(
-    product?.priceInCents
+    product?.priceInCents || 0
   );
   return (
     <form action={action} className="space-y-8">
@@ -30,7 +30,7 @@ function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.name}
         />
-        {error.name && <div className="text-destructive">{error.name}</div>}
+        {error?.name && <div className="text-destructive">{error?.name}</div>}
       </div>
       <div className="space-y-2">
         <Label htmlFor="priceInCents">Price</Label>
@@ -42,8 +42,8 @@ function ProductForm({ product }: { product?: Product | null }) {
           value={priceInCent}
           onChange={(e) => setPriceInCent(Number(e.target.value))}
         />
-        {error.priceInCents && (
-          <div className="text-destructive">{error.priceInCents}</div>
+        {error?.priceInCents && (
+          <div className="text-destructive">{error?.priceInCents}</div>
         )}
       </div>
       <div className="text-muted-foreground">
@@ -57,8 +57,8 @@ function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.description}
         />
-        {error.description && (
-          <div className="text-destructive">{error.description}</div>
+        {error?.description && (
+          <div className="text-destructive">{error?.description}</div>
         )}
       </div>
       <div className="space-y-2">
@@ -67,7 +67,7 @@ function ProductForm({ product }: { product?: Product | null }) {
         {product != null && (
           <div className="text-muted-foreground">{product.filePath}</div>
         )}
-        {error.file && <div className="text-destructive">{error.file}</div>}
+        {error?.file && <div className="text-destructive">{error?.file}</div>}
       </div>
       <div className="space-y-2">
         <Label htmlFor="image">Image</Label>
@@ -80,7 +80,7 @@ function ProductForm({ product }: { product?: Product | null }) {
             alt="Product image"
           />
         )}
-        {error.image && <div className="text-destructive">{error.image}</div>}
+        {error?.image && <div className="text-destructive">{error?.image}</div>}
       </div>
       <SubmitButton />
     </form>

@@ -1,5 +1,6 @@
 "use client";
 import { getTotalItemsInCartByUserId } from "@/app/(customerFacing)/_actions/cart";
+import { app, firebaseConfig } from "@/firebase/config";
 import { cn } from "@/lib/utils";
 import { logout } from "@/store/authReducer";
 import { resetItemFromCart, setInitItemCart } from "@/store/cartReducer";

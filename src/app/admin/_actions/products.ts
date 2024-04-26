@@ -1,10 +1,18 @@
 "use server";
 
 import db from "@/db/db";
-import { z } from "zod";
+import { storage } from "@/firebase/config";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import fs from "fs/promises";
-import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { notFound, redirect } from "next/navigation";
+import { z } from "zod";
+import { v4 as uuidv4 } from "uuid";
 
 const fileSchema = z.instanceof(File, { message: "Required" });
 const imageSchema = fileSchema.refine(
@@ -25,39 +33,48 @@ const editSchema = addSchema.extend({
 });
 
 export async function addProduct(prevState: unknown, formData: FormData) {
-  const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
+  try {
+    const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
+    const uniqueFilename = uuidv4();
 
-  if (!result.success) {
-    return result.error.formErrors.fieldErrors;
+    if (!result.success) {
+      return result.error.formErrors.fieldErrors;
+    }
+
+    const data = result.data;
+
+    const publicProductsRef = `public/products/${uniqueFilename}`;
+    const productsRef = `products/${uniqueFilename}`;
+    const storagePublicProductsRef = ref(storage, publicProductsRef);
+    const storageProductsRef = ref(storage, productsRef);
+
+    const filePath = await uploadBytes(storageProductsRef, data.file);
+    const imagePath = await uploadBytes(storagePublicProductsRef, data.image);
+
+    const fileDownloadUrl = await getDownloadURL(filePath.ref);
+    const imageDownloadUrl = await getDownloadURL(imagePath.ref);
+
+    await db.product.create({
+      data: {
+        isAvailableForPurchase: false,
+        name: data.name,
+        description: data.description,
+        priceInCents: data.priceInCents,
+        filePath: fileDownloadUrl,
+        imagePath: imageDownloadUrl,
+        filePathRef: productsRef,
+        imagePathRef: publicProductsRef,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/products");
+    redirect("/admin/products");
+  } catch (error) {
+    console.log({ error });
+
+    throw error;
   }
-
-  const data = result.data;
-
-  await fs.mkdir("products", { recursive: true });
-  const filePath = `products/${crypto.randomUUID()}-${data.file.name}`;
-  await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
-
-  await fs.mkdir("public/products", { recursive: true });
-  const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-  await fs.writeFile(
-    `public${imagePath}`,
-    Buffer.from(await data.image.arrayBuffer())
-  );
-
-  const test = await db.product.create({
-    data: {
-      isAvailableForPurchase: false,
-      name: data.name,
-      description: data.description,
-      priceInCents: data.priceInCents,
-      filePath,
-      imagePath,
-    },
-  });
-
-  revalidatePath("/");
-  revalidatePath("/products");
-  redirect("/admin/products");
 }
 
 export async function updateProduct(
@@ -78,21 +95,22 @@ export async function updateProduct(
     return notFound();
   }
 
-  let filePath = product.filePath;
+  let fileDownloadUrl = product.filePath;
   if (data.file != null && data?.file?.size > 0) {
-    await fs.unlink(product.filePath);
-    filePath = `products/${crypto.randomUUID()}-${data.file.name}`;
-    await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
+    const fileRef = ref(storage, product.filePathRef);
+    await deleteObject(fileRef);
+
+    const uploadFile = await uploadBytes(fileRef, data.file);
+    fileDownloadUrl = await getDownloadURL(uploadFile.ref);
   }
 
-  let imagePath = product.imagePath;
+  let imageDownloadUrl = product.imagePath;
   if (data.image != null && data?.image?.size > 0) {
-    await fs.unlink(`public${product.imagePath}`);
-    const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-    await fs.writeFile(
-      `public${imagePath}`,
-      Buffer.from(await data.image.arrayBuffer())
-    );
+    const imageRef = ref(storage, product.imagePathRef);
+    await deleteObject(imageRef);
+
+    const uploadFile = await uploadBytes(imageRef, data.image);
+    fileDownloadUrl = await getDownloadURL(uploadFile.ref);
   }
 
   await db.product.update({
@@ -101,8 +119,8 @@ export async function updateProduct(
       name: data.name,
       description: data.description,
       priceInCents: data.priceInCents,
-      filePath,
-      imagePath,
+      filePath: fileDownloadUrl,
+      imagePath: imageDownloadUrl,
     },
   });
 
@@ -124,8 +142,11 @@ export async function deleteProduct(id: string) {
   const product = await db.product.delete({ where: { id } });
   if (!product) return notFound();
 
-  await fs.unlink(product.filePath);
-  await fs.unlink(`public${product.imagePath}`);
+  const fileRef = ref(storage, product.filePathRef);
+  await deleteObject(fileRef);
+
+  const imageRef = ref(storage, product.imagePathRef);
+  await deleteObject(imageRef);
 
   revalidatePath("/");
   revalidatePath("/products");
