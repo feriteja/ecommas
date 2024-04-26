@@ -39,7 +39,7 @@ function AdminProductPage() {
   );
 }
 
-export async function ProductsTable() {
+async function ProductsTable() {
   const products = await db.product.findMany({
     select: {
       id: true,
