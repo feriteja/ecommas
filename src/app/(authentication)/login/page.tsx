@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
       const authData = authJwtData();
 
       dispatch(loginSuccess(authData));
-      router.replace("/");
+      router.push("/");
     }
   };
   return (

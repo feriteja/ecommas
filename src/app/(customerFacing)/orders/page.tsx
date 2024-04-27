@@ -1,11 +1,11 @@
-import React from "react";
-import { getMyOrders } from "../_actions/order";
-import { cookies } from "next/headers";
-import { jwtDecode } from "jwt-decode"; // JWT decoding library
 import { AuthJwtToken } from "@/lib/authJwtData";
-import PageHeader from "../_components/PageHeader";
-import Image from "next/image";
 import { formatCurrency } from "@/lib/formater";
+import { jwtDecode } from "jwt-decode"; // JWT decoding library
+import { cookies } from "next/headers";
+import Image from "next/image";
+import { redirect } from "next/navigation";
+import { getMyOrders } from "../_actions/order";
+import PageHeader from "../_components/PageHeader";
 
 function OrdersPage() {
   return (
@@ -19,8 +19,10 @@ function OrdersPage() {
 async function OrderLists() {
   const cookieStore = cookies();
   const authToken = cookieStore.get("auth_token");
+  if (!authToken) {
+    redirect("/login");
+  }
   const decodedToken = jwtDecode(authToken?.value as string) as AuthJwtToken;
-  const dummyOrder = [...Array(10).fill(1)];
 
   const orders = await getMyOrders(decodedToken.userId);
   if (orders.length === 0) return <p>No Orders Found</p>;
