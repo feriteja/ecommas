@@ -66,13 +66,7 @@ function CartPage() {
   }, [refreshData]);
 
   return (
-    <div className="grid grid-cols-12 gap-4">
-      <button
-        onClick={() => console.log(selectedProducts)}
-        className="col-span-12"
-      >
-        halo
-      </button>
+    <div className="grid grid-cols-12 gap-4 py-4">
       <div className="col-span-8 space-y-2">
         {cartItems.map((data) => (
           <CartCard

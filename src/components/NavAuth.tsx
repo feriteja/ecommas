@@ -122,9 +122,11 @@ export function CartNav() {
 
   return (
     <button onClick={() => toCartHandler()} className="relative">
-      <span className="absolute -top-2 -right-2 bg-red-600 rounded-full text-destructive-foreground p-0.5 text-xs">
-        {cartNumber}
-      </span>
+      {cartNumber > 0 && (
+        <span className="absolute -top-2 -right-2 bg-red-600 rounded-full text-destructive-foreground p-0.5 text-xs">
+          {cartNumber}
+        </span>
+      )}
       <ShoppingCart />
     </button>
   );

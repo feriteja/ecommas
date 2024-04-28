@@ -2,17 +2,17 @@
 
 import db from "@/db/db";
 import { storage } from "@/firebase/config";
+
 import {
   deleteObject,
   getDownloadURL,
   ref,
   uploadBytes,
 } from "firebase/storage";
-import fs from "fs/promises";
 import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
-import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 
 const fileSchema = z.instanceof(File, { message: "Required" });
 const imageSchema = fileSchema.refine(
